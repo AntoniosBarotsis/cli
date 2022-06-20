@@ -1,4 +1,4 @@
-#!/usr/bin/env just --justfile
+#!/usr/bin/env -S just --working-directory . --justfile
 # cargo install just
 
 toplevel := `git rev-parse --show-toplevel`
