@@ -138,7 +138,7 @@ impl Extension {
 
     /// Return the canonicalized, absolute path to this extension's entry point.
     pub fn path(&self) -> Result<PathBuf, io::Error> {
-        self.path.join(&self.manifest.entry_point).canonicalize()
+        Ok(self.path.join(&self.manifest.entry_point))
     }
 
     /// Execute an extension subcommand.
