@@ -89,6 +89,8 @@ impl ExtensionsModuleLoader {
 
         let extensions_path = extension::extensions_path()?;
         if !path.starts_with(&extensions_path) {
+            println!("PATH: {:?}", path);
+            println!("EXTENSIONS PATH: {:?}", extensions_path);
             return Err(anyhow!(
                 "`{}`: importing from paths outside of the extension's directory is not allowed",
                 path.to_string_lossy(),
