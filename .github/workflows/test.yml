@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - cibusters
   # Run weekly on the default branch to make sure it always builds with the latest rust release
   schedule:
     - cron: '30 5 * * 1'
