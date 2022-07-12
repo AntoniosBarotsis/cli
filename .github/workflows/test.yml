@@ -39,6 +39,7 @@ jobs:
         with:
           command: build
           args: --release --target aarch64-unknown-linux-musl
+          use-cross: true
   # This job reports the results of the test matrix above
   test:
     if: always()
