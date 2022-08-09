@@ -83,80 +83,80 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  Build-Release-Artifacts:
-    name: Build the release artifacts
-    needs: [Generate-Completion-Files, Build-CLI]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install host dependencies
-        run: sudo apt install -yq zip
+  # Build-Release-Artifacts:
+  #   name: Build the release artifacts
+  #   needs: [Generate-Completion-Files, Build-CLI]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Install host dependencies
+  #       run: sudo apt install -yq zip
 
-      - name: Checkout the repo
-        uses: actions/checkout@v3
-        with:
-          path: cli
+  #     - name: Checkout the repo
+  #       uses: actions/checkout@v3
+  #       with:
+  #         path: cli
 
-      - name: Download release artifacts
-        uses: actions/download-artifact@v3
+  #     - name: Download release artifacts
+  #       uses: actions/download-artifact@v3
 
-      - name: Prep archives
-        run: |
-          for archive in phylum-*/;
-          do
-            archive=$(echo ${archive} | sed -e "s/\/$//")
-            cp -R shell-completions ${archive}/completions
-            cp cli/cli/src/install.sh ${archive}/install.sh
-            chmod a+x ${archive}/phylum
-            zip -r ${archive}.zip ${archive}
-          done
+  #     - name: Prep archives
+  #       run: |
+  #         for archive in phylum-*/;
+  #         do
+  #           archive=$(echo ${archive} | sed -e "s/\/$//")
+  #           cp -R shell-completions ${archive}/completions
+  #           cp cli/cli/src/install.sh ${archive}/install.sh
+  #           chmod a+x ${archive}/phylum
+  #           zip -r ${archive}.zip ${archive}
+  #         done
 
-      - name: Upload release artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-archives
-          path: phylum-*.zip
-          if-no-files-found: error
-          retention-days: 7
+  #     - name: Upload release artifacts
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: release-archives
+  #         path: phylum-*.zip
+  #         if-no-files-found: error
+  #         retention-days: 7
 
-  Release:
-    name: Create release from tag
-    needs: Build-Release-Artifacts
-    # Only run this job when pushing a tag
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install host dependencies
-        run: |
-          sudo add-apt-repository -y ppa:dysfunctionalprogramming/minisign
-          sudo apt update
-          sudo apt install -yq minisign
+  # Release:
+  #   name: Create release from tag
+  #   needs: Build-Release-Artifacts
+  #   # Only run this job when pushing a tag
+  #   if: startsWith(github.ref, 'refs/tags/')
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Install host dependencies
+  #       run: |
+  #         sudo add-apt-repository -y ppa:dysfunctionalprogramming/minisign
+  #         sudo apt update
+  #         sudo apt install -yq minisign
 
-      - name: Download release artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: release-archives
+  #     - name: Download release artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: release-archives
 
-      - name: Sign archives
-        run: |
-          echo -e $MINISIGN_KEY > minisign.key
-          for archive in phylum-*.zip;
-          do
-            echo $MINISIGN_PASSWORD | minisign -Sm ${archive} -s minisign.key -t 'Phylum - The Software Supply Chain Company'
-          done
-        env:
-          MINISIGN_KEY: ${{ secrets.MINISIGN_KEY }}
-          MINISIGN_PASSWORD: ${{ secrets.MINISIGN_PASSWORD }}
+  #     - name: Sign archives
+  #       run: |
+  #         echo -e $MINISIGN_KEY > minisign.key
+  #         for archive in phylum-*.zip;
+  #         do
+  #           echo $MINISIGN_PASSWORD | minisign -Sm ${archive} -s minisign.key -t 'Phylum - The Software Supply Chain Company'
+  #         done
+  #       env:
+  #         MINISIGN_KEY: ${{ secrets.MINISIGN_KEY }}
+  #         MINISIGN_PASSWORD: ${{ secrets.MINISIGN_PASSWORD }}
 
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
-        with:
-          # This check is already filtered down to only 'refs/tags/' and shouldn't "overmatch"
-          prerelease: ${{ contains(github.ref, 'rc') }}
-          fail_on_unmatched_files: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-            phylum-*.zip
-            phylum-*.zip.minisig
+  #     - name: Create GitHub release
+  #       uses: softprops/action-gh-release@v1
+  #       with:
+  #         # This check is already filtered down to only 'refs/tags/' and shouldn't "overmatch"
+  #         prerelease: ${{ contains(github.ref, 'rc') }}
+  #         fail_on_unmatched_files: true
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         files: |
+  #           phylum-*.zip
+  #           phylum-*.zip.minisig
 
   # Trigger:
   #   name: Trigger phylum-ci Docker image creation
@@ -183,15 +183,15 @@ jobs:
   #           -d "{\"event_type\":\"build-push-docker-images\",\"client_payload\":{\"CLI_version\":\"$GITHUB_REF_NAME\"}}" \
   #           https://api.github.com/repos/phylum-dev/phylum-ci/dispatches
 
-  Update-Documentation:
-    name: Update the documentation
-    needs: Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v3
+  # Update-Documentation:
+  #   name: Update the documentation
+  #   needs: Release
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout the repo
+  #       uses: actions/checkout@v3
 
-      - name: Update v2-latest using rdme
-        uses: readmeio/rdme@7.5.0
-        with:
-          rdme: docs ./docs --key=${{ secrets.README_API }} --version=2-latest
+  #     - name: Update v2-latest using rdme
+  #       uses: readmeio/rdme@7.5.0
+  #       with:
+  #         rdme: docs ./docs --key=${{ secrets.README_API }} --version=2-latest
