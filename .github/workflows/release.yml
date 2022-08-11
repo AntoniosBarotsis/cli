@@ -26,8 +26,6 @@ jobs:
           toolchain: stable
           profile: minimal
 
-      - name: Build Cross images
-
       - name: Generate shell completion files
         uses: actions-rs/cargo@v1
         with:
