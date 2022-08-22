@@ -1,8 +1,7 @@
-name = "poetry"
-description = "Poetry package manager hooks"
+name = "policy"
+description = "Policy manager for Phylum analysis"
 entry_point = "main.ts"
 
 [permissions]
-run = ["poetry"]
-read = ["./poetry.lock", "./pyproject.toml"]
-write = ["./poetry.lock", "./pyproject.toml"]
+run = ["policy"]
+read = ["./.phylum_rules"]
