@@ -42,7 +42,8 @@ async function loadRules(): Promise<Rule[]> {
 }
 
 async function runAnalysis(eco: string, lockfile: string): Promise<Object[]> {
-    const jobId = await PhylumApi.analyze(eco, lockfile);
+    const lockData = await PhylumApi.parseLockfile(lockfile, eco);
+    const jobId = await PhylumApi.analyze(eco, lockData.packages);
     const status = await PhylumApi.getJobStatus(jobId);
 
     // print messages
