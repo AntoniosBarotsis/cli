@@ -385,7 +385,7 @@ fn run_sandboxed(process: Process) -> Result<ProcessOutput> {
 /// Return error when trying to sandbox on Windows.
 #[op]
 #[cfg(not(unix))]
-fn run_sandboxed(process: Process) -> Result<ProcessOutput> {
+fn run_sandboxed(_process: Process) -> Result<ProcessOutput> {
     Err(anyhow!("Extension sandboxing is not supported on this platform"))
 }
 
