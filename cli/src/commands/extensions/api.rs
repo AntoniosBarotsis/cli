@@ -5,7 +5,7 @@ use std::cell::RefCell;
 use std::io;
 #[cfg(unix)]
 use std::os::unix::process::{CommandExt, ExitStatusExt};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 #[cfg(unix)]
 use std::process::{Command, Stdio};
 use std::rc::Rc;
