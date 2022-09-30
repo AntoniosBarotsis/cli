@@ -7,8 +7,6 @@ use std::io;
 use std::os::unix::process::{CommandExt, ExitStatusExt};
 use std::path::Path;
 #[cfg(unix)]
-use std::path::PathBuf;
-#[cfg(unix)]
 use std::process::{Command, Stdio};
 use std::rc::Rc;
 use std::str::FromStr;
@@ -332,7 +330,7 @@ async fn parse_lockfile(
 #[cfg(unix)]
 fn run_sandboxed(process: Process) -> Result<ProcessOutput> {
     // Setup process to be run.
-    let mut command = Command::new(process.cmd);
+    let mut command = Command::new(&process.cmd);
     command.args(&process.args);
     command.stdin(process.stdin);
     command.stdout(process.stdout);
@@ -371,12 +369,15 @@ fn run_sandboxed(process: Process) -> Result<ProcessOutput> {
             if process.exceptions.net {
                 birdcage.add_exception(Exception::Networking).map_err(into_ioerr)?;
             }
+
             birdcage.lock().map_err(into_ioerr)?;
             Ok(())
         });
     }
 
-    let output = command.output()?;
+    let output = command.output().with_context(|| {
+        format!("Executing sandboxed process `{} {}`", process.cmd, process.args.join(" "))
+    })?;
 
     Ok(ProcessOutput {
         stdout: String::from_utf8_lossy(&output.stdout).into_owned(),
