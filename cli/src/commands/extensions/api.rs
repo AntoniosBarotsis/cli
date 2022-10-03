@@ -35,6 +35,7 @@ use crate::commands::extensions::permissions::Permission;
 use crate::commands::extensions::state::ExtensionState;
 use crate::commands::parse;
 use crate::config::{self, ProjectConfig};
+#[cfg(unix)]
 use crate::dirs;
 
 /// Package descriptor for any ecosystem.
