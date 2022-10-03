@@ -137,12 +137,6 @@ async function checkDryRun(subcommand: string, args: string[]) {
         abort(status.code);
     }
 
-    // Ensure lockfile update was successful.
-    if (!status.success) {
-        console.error(`[${red("phylum")}] Lockfile update failed.\n`);
-        abort(status.code);
-    }
-
     const lockfile = await PhylumApi.parseLockfile('./package-lock.json', 'npm');
 
     // Ensure `checkDryRun` never modifies package manager files,
